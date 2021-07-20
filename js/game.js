@@ -1,6 +1,6 @@
 var config = {
     type: Phaser.AUTO,
-    width: 800,
+    width: 1100,
     height: 600,
     scene: {
         preload: preload,
@@ -20,13 +20,23 @@ function preload () {
 
 var trexClicker;
 function create () {
-    trexClicker = this.add.sprite(500, 290, 'trex');
+    this.bg1 = this.add.tileSprite(0, 0, game.config.width, game.config.height, "forest-front");
+    this.bg1.setOrigin(0, 0);
+    this.bg1.setScrollFactor(0);
+    // this.bg1.setScale(0.73,1);
+    
+    this.bg2 = this.add.tileSprite(0, 0, game.config.width, game.config.height, "forest-back");
+    this.bg2.setOrigin(0, 0);
+    this.bg2.setScrollFactor(0);
+    // this.bg2.setScale(0.73,1);
+    
+    trexClicker = this.add.sprite(550, 300, 'trex');
     trexClicker.setOrigin(0.5, 0.5);
 
-    background = this.add.group();
-    backgroundImages = ['forest-front', 'forest-back'];
+    // background = this.add.group();
+    // backgroundImages = ['forest-front', 'forest-back'];
     // backgroundImages.forEach(function (image) {
-    //     var bg = this.scene.add.tileSprite(0, 0, this.world.width, this.world.height, image, '', background);
+    //     var bg = this.add.tileSprite(0, 0, this.world.width, this.world.height, image, '', background);
     //     bg.tileScale.setTo(4,4);
     // });
 }
