@@ -15,21 +15,13 @@ function preload () {
     this.load.image('trex', 'assets/images/clicker/trex.png');
 }
 
+var trexClicker;
 function create () {
-    var trexClicker = this.add.sprite(450, 290, 'trex');
+    trexClicker = this.add.sprite(450, 290, 'trex');
     trexClicker.setOrigin(0.5, 0.5);
 }
 
 function update () {
-    var textConfig = {
-        x: 0,
-        y: 0,
-        text: 'Make some eggs!',
-        style: {
-            color: "#ffffff"
-        }
-    };
-    // this.add.text(textConfig);
     const style = { color: "#ffffff" };
-    this.add.text(0, 0, 'Make some eggs!', style);
+    this.add.text(trexClicker.x - trexClicker.displayWidth/2, trexClicker.y + trexClicker.displayWidth/2, 'Make some eggs!', style);
 }
