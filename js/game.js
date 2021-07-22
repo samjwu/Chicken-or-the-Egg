@@ -32,6 +32,11 @@ function clickedClicker() {
     eggCount += clickerPower;
 }
 
+function getScore() {
+    eggCount = parseInt(localStorage.getItem('eggCount')) || 0;
+    eggsPerSecond = parseInt(localStorage.getItem('eggsPerSecond')) || 0;
+}
+
 function preload () {
     this.load.image('trex', 'assets/images/clicker/trex.png');
     this.load.image('velociraptor', 'assets/images/clicker/velociraptor.png');
@@ -44,6 +49,8 @@ function preload () {
 }
 
 function create () {
+    getScore();
+
     clock = game.getTime();
 
     this.bg1 = this.add.tileSprite(0, 0, game.config.width, game.config.height, "forest-front");
@@ -92,9 +99,11 @@ function update () {
 
     var now = game.getTime();
     var dt = (now - clock) / 1000;
-
+    
     eggCount += dt * eggsPerSecond;
     eggCountText.setText('Eggs: ' + formatEggCount(Math.round(eggCount)));
+    localStorage.setItem('eggCount', eggCount);
+    localStorage.setItem('eggsPerSecond', eggsPerSecond);
 
     clock = now;
 }
