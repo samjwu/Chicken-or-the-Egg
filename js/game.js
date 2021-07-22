@@ -9,7 +9,26 @@ var config = {
     }
 };
 
+var clicker = null;
+var clickerPower = 1;
+
+var timer;
+
+var eggCount = 0;
+var eggCountText = null;
+
+var eggsPerSecond = 0;
+var eggsPerSecondText = null;
+
 var game = new Phaser.Game(config);
+
+const formatEggCount = (eggs) => {
+    return eggs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function clickedClicker() {
+    eggCount += clickerPower;
+}
 
 function preload () {
     this.load.image('trex', 'assets/images/clicker/trex.png');
@@ -22,8 +41,9 @@ function preload () {
     this.load.image('forest-back', 'assets/images/backgrounds/parallax/battleback1-2.png');
 }
 
-var trexClicker;
 function create () {
+    clock = game.getTime();
+
     this.bg1 = this.add.tileSprite(0, 0, game.config.width, game.config.height, "forest-front");
     this.bg1.setOrigin(0, 0);
     this.bg1.setScrollFactor(0);
@@ -34,18 +54,41 @@ function create () {
     this.bg2.setScrollFactor(0);
     // this.bg2.setScale(0.73,1);
     
-    trexClicker = this.add.sprite(550, 300, 'trex');
-    trexClicker.setOrigin(0.5, 0.5);
+    var clickerData = [
+        {name: 'T-Rex', image: 'trex'},
+        {name: 'Velociraptor', image: 'velociraptor'},
+        {name: 'Dinobird', image: 'dinobird'},
+        {name: 'Chickensaur', image: 'chickensaur'},
+        {name: 'Chicken', image: 'chicken'}
+    ];
 
-    // background = this.add.group();
-    // backgroundImages = ['forest-front', 'forest-back'];
-    // backgroundImages.forEach(function (image) {
-    //     var bg = this.add.tileSprite(0, 0, this.world.width, this.world.height, image, '', background);
-    //     bg.tileScale.setTo(4,4);
-    // });
+    clicker = this.add.sprite(this.game.config.width/2, this.game.config.height/2, 'trex').setInteractive({
+        pixelPerfect: true
+    });
+
+    eggCountText = this.add.text(
+        clicker.x - clicker.displayWidth/2, 0, 'Eggs: ' + formatEggCount(eggCount), 
+        { fontSize: '20px', fill: '#ffffff' }
+    );
+    
+    eggsPerSecondText = this.add.text(
+        clicker.x - clicker.displayWidth/2, eggCountText.displayHeight, 'Eggs Per Second: ' + formatEggCount(eggsPerSecond), 
+        {fontSize: '20px', fill: '#ffffff' }
+    );
+      
+    clicker.on('pointerdown', clickedClicker);
 }
 
 function update () {
-    const style = { color: "#ffffff" };
-    this.add.text(trexClicker.x - trexClicker.displayWidth/2, trexClicker.y + trexClicker.displayWidth/2, 'Make some eggs!', style);
+    var promptText = this.add.text(clicker.x - clicker.displayWidth/2, clicker.y + clicker.displayHeight/2, 'Make some eggs!',
+        {fontSize: '20px', fill: '#ffffff' }
+    );
+
+    var now = game.getTime();
+    var dt = (now - clock) / 1000;
+
+    eggCount += dt * eggsPerSecond;
+    eggCountText.setText('Eggs: ' + formatEggCount(Math.round(eggCount)));
+
+    clock = now;
 }
