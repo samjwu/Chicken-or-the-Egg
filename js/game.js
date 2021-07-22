@@ -22,6 +22,8 @@ var eggsPerSecondText = null;
 
 var game = new Phaser.Game(config);
 
+const eggShellColor = 0xf0ead6;
+
 const formatEggCount = (eggs) => {
     return eggs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
@@ -53,6 +55,10 @@ function create () {
     this.bg2.setOrigin(0, 0);
     this.bg2.setScrollFactor(0);
     // this.bg2.setScale(0.73,1);
+
+    var upgadePanel = this.add.rectangle(110, game.config.height/2, 200, game.config.height-20, eggShellColor);
+
+    upgadePanel.setStrokeStyle(5, 0x000000);
     
     var clickerData = [
         {name: 'T-Rex', image: 'trex'},
