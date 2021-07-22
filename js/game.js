@@ -13,6 +13,10 @@ var game = new Phaser.Game(config);
 
 function preload () {
     this.load.image('trex', 'assets/images/clicker/trex.png');
+    this.load.image('velociraptor', 'assets/images/clicker/velociraptor.png');
+    this.load.image('dinobird', 'assets/images/clicker/dinobird.png');
+    this.load.image('chickensaur', 'assets/images/clicker/chickensaur.png');
+    this.load.image('chicken', 'assets/images/clicker/chicken.png');
 
     this.load.image('forest-front', 'assets/images/backgrounds/parallax/battleback1-1.png');
     this.load.image('forest-back', 'assets/images/backgrounds/parallax/battleback1-2.png');
