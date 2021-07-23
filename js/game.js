@@ -17,15 +17,30 @@ var clickerData = [
     {name: 'Chicken', image: 'chicken'}
 ];
 
+var producerData = [
+    {name: 'T-Rex', image: 'trexP'},
+    {name: 'Velociraptor', image: 'velociraptorP'},
+    {name: 'Dinobird', image: 'dinobirdP'},
+    {name: 'Chickensaur', image: 'chickensaurP'},
+    {name: 'Chicken', image: 'chickenP'}
+];
+
 var clickerIdx = 0;
 var clicker;
 var clickerPower = 1;
-var babyPower = 1;
 
 var timer = 0;
 
 var buyCost = 10;
+var buyBabyButton;
+var babyText;
+var babyCostText;
+
 var upgradeCost = 100;
+var buyUpgradeButton;
+var upgradeText;
+var upgradeCostText;
+var babyPower = 1;
 
 var eggCount = 0;
 var eggCountText;
@@ -57,12 +72,20 @@ function clickedClicker() {
 
 function clickedBuyBaby() {
     if (eggCount > buyCost) {
-
+        eggCount -= buyCost;
+        buyCost *= 2;
+        eggsPerSecond += babyPower;
     }
 }
 
 function clickedUpgrade() {
+    if (clickerIdx < 4 && eggCount > upgradeCost) {
+        eggCount -= upgradeCost;
+        upgradeCost *= 10;
+        clickerPower *= 2;
 
+        clickerIdx++;
+    }
 }
 
 function getScore() {
@@ -77,6 +100,12 @@ function preload () {
     this.load.image('dinobird', 'assets/images/clicker/dinobird.png');
     this.load.image('chickensaur', 'assets/images/clicker/chickensaur.png');
     this.load.image('chicken', 'assets/images/clicker/chicken.png');
+
+    this.load.image('trexP', 'assets/images/producer/trex.png');
+    this.load.image('velociraptorP', 'assets/images/producer/velociraptor.png');
+    this.load.image('dinobirdP', 'assets/images/producer/dinobird.png');
+    this.load.image('chickensaurP', 'assets/images/producer/chickensaur.png');
+    this.load.image('chickenP', 'assets/images/producer/chicken.png');
 
     this.load.image('forest-front', 'assets/images/backgrounds/parallax/battleback1-1.png');
     this.load.image('forest-back', 'assets/images/backgrounds/parallax/battleback1-2.png');
@@ -98,15 +127,17 @@ function create () {
     var upgradePanel = this.add.rectangle(110, game.config.height/2, 200, game.config.height-20, eggShellColor);
     upgradePanel.setStrokeStyle(5, 0x000000);
 
-    var buyBabyButton = this.add.rectangle(upgradePanel.x, 150, 150, 150, upgradeColor);
-    this.add.text(buyBabyButton.x, buyBabyButton.y - buyBabyButton.height/2 - 30, 'Buy Baby\n' + clickerData[clickerIdx].name, { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
+    buyBabyButton = this.add.sprite(upgradePanel.x, 150, producerData[clickerIdx].image).setInteractive({
+        pixelPerfect: true
+    });
+    babyText = this.add.text(buyBabyButton.x, buyBabyButton.y - buyBabyButton.height/2 - 30, 'Buy Baby\n' + producerData[clickerIdx].name, { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
     this.add.image(buyBabyButton.x, buyBabyButton.y, clickerData[clickerIdx].image);
-    this.add.text(buyBabyButton.x, buyBabyButton.y + buyBabyButton.height/2 + 20, 'Price: ' + buyCost, { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
+    babyCostText = this.add.text(buyBabyButton.x, buyBabyButton.y + buyBabyButton.height/2 + 20, 'Price: ' + buyCost, { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
 
-    var buyUpgradeButton = this.add.rectangle(upgradePanel.x, 450, 150, 150, upgradeColor);
-    this.add.text(buyUpgradeButton.x, buyUpgradeButton.y - buyUpgradeButton.height/2 - 30, '(D)Evolve to\n' + clickerData[clickerIdx+1].name, { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
+    buyUpgradeButton = this.add.rectangle(upgradePanel.x, 450, 150, 150, upgradeColor);
+    upgradeText = this.add.text(buyUpgradeButton.x, buyUpgradeButton.y - buyUpgradeButton.height/2 - 30, '(D)Evolve to\n' + producerData[clickerIdx+1].name, { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
     this.add.image(buyUpgradeButton.x, buyUpgradeButton.y, clickerData[clickerIdx+1].image);
-    this.add.text(buyUpgradeButton.x, buyUpgradeButton.y + buyUpgradeButton.height/2 + 20, 'Price: ' + upgradeCost, { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
+    upgradeCostText = this.add.text(buyUpgradeButton.x, buyUpgradeButton.y + buyUpgradeButton.height/2 + 20, 'Price: ' + upgradeCost, { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
 
     upgradeButtons.push(buyBabyButton);
     upgradeButtons.push(buyUpgradeButton);
@@ -116,7 +147,7 @@ function create () {
     this.add.text(infoPanel.x, 40, 'Seconds played\nthis session:', { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
     playTime = this.add.text(infoPanel.x, 80, formatEggCount(timer), { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
 
-    clicker = this.add.sprite(this.game.config.width/2, this.game.config.height/2, 'trex').setInteractive({
+    clicker = this.add.sprite(this.game.config.width/2, this.game.config.height/2, clickerData[clickerIdx].image).setInteractive({
         pixelPerfect: true
     });
     clicker.setScale(2);
@@ -157,6 +188,8 @@ function update () {
 
     eggCount += dt * eggsPerSecond;
     eggCountText.setText('Eggs: ' + formatEggCount(Math.round(eggCount)));
+
+    eggsPerSecondText.setText('Eggs Per Second: ' + formatEggCount(Math.round(eggsPerSecond)));
     
     localStorage.setItem('eggCount', eggCount);
     localStorage.setItem('totalEggs', totalEggs);
