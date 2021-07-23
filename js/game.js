@@ -25,6 +25,7 @@ var upgradeButtons = [];
 var game = new Phaser.Game(config);
 
 const eggShellColor = 0xf0ead6;
+const upgradeColor = 0xffa500;
 
 const formatEggCount = (eggs) => {
     return eggs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -68,11 +69,18 @@ function create () {
     var upgradePanel = this.add.rectangle(110, game.config.height/2, 200, game.config.height-20, eggShellColor);
     upgradePanel.setStrokeStyle(5, 0x000000);
 
-    var buyBabyButton = this.add.rectangle(upgradePanel.x, 50, 150, 50);
-    this.add.text(buyBabyButton.x, buyBabyButton.y, 'Buy Baby T-rex', { fill: '#000000'}).setOrigin(0.5);
-    this.add.image(buyBabyButton.x, buyBabyButton.y + 64, 'trex');
+    var buyBabyButton = this.add.rectangle(upgradePanel.x, 150, 150, 150, upgradeColor);
+    this.add.text(buyBabyButton.x, buyBabyButton.y - buyBabyButton.height/2 - 30, 'Buy\nBaby T-rex', { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
+    this.add.image(buyBabyButton.x, buyBabyButton.y, 'trex');
+    this.add.text(buyBabyButton.x, buyBabyButton.y + buyBabyButton.height/2 + 20, 'Price: 10', { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
+
+    var buyUpgradeButton = this.add.rectangle(upgradePanel.x, 450, 150, 150, upgradeColor);
+    this.add.text(buyUpgradeButton.x, buyUpgradeButton.y - buyUpgradeButton.height/2 - 30, '(D)Evolve to\nVelociraptor', { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
+    this.add.image(buyUpgradeButton.x, buyUpgradeButton.y, 'velociraptor');
+    this.add.text(buyUpgradeButton.x, buyUpgradeButton.y + buyUpgradeButton.height/2 + 20, 'Price: 100', { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
 
     upgradeButtons.push(buyBabyButton);
+    upgradeButtons.push(buyUpgradeButton);
 
     var clickerData = [
         {name: 'T-Rex', image: 'trex'},
