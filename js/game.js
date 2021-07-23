@@ -9,16 +9,20 @@ var config = {
     }
 };
 
-var clicker = null;
+var clicker;
 var clickerPower = 1;
 
 var timer = 0;
 
 var eggCount = 0;
-var eggCountText = null;
+var eggCountText;
+
+var totalEggs = 0;
+var totalEggsText;
+var totalEggsCountText;
 
 var eggsPerSecond = 0;
-var eggsPerSecondText = null;
+var eggsPerSecondText;
 
 var upgradeButtons = [];
 var infoPanel;
@@ -35,10 +39,12 @@ const formatEggCount = (eggs) => {
 
 function clickedClicker() {
     eggCount += clickerPower;
+    totalEggs += clickerPower;
 }
 
 function getScore() {
     eggCount = parseInt(localStorage.getItem('eggCount')) || 0;
+    totalEggs = parseInt(localStorage.getItem('totalEggs')) || 0;
     eggsPerSecond = parseInt(localStorage.getItem('eggsPerSecond')) || 0;
 }
 
@@ -106,6 +112,12 @@ function create () {
         clicker.x - clicker.displayWidth/2, 10, 'Eggs: ' + formatEggCount(eggCount), 
         { fontSize: '20px', fill: '#ffffff' }
     );
+
+    totalEggsText = this.add.text(
+        infoPanel.x, 120, 'Total Eggs Made:', 
+        { fontSize: '19px', fill: '#000000' }
+    ).setOrigin(0.5);
+    totalEggsCountText = this.add.text(infoPanel.x, 140, formatEggCount(timer), { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
     
     eggsPerSecondText = this.add.text(
         clicker.x - clicker.displayWidth/2, this.game.config.height - 30, 'Eggs Per Second: ' + formatEggCount(eggsPerSecond), 
@@ -125,9 +137,14 @@ function update () {
     timer += dt;
     playTime.setText(Math.round(timer));
     
+    totalEggs += dt * eggsPerSecond;
+    totalEggsCountText.setText(formatEggCount(Math.round(totalEggs)));
+
     eggCount += dt * eggsPerSecond;
     eggCountText.setText('Eggs: ' + formatEggCount(Math.round(eggCount)));
+    
     localStorage.setItem('eggCount', eggCount);
+    localStorage.setItem('totalEggs', totalEggs);
     localStorage.setItem('eggsPerSecond', eggsPerSecond);
 
     clock = now;
