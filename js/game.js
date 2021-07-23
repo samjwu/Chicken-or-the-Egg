@@ -20,6 +20,8 @@ var eggCountText = null;
 var eggsPerSecond = 0;
 var eggsPerSecondText = null;
 
+var upgradeButtons = [];
+
 var game = new Phaser.Game(config);
 
 const eggShellColor = 0xf0ead6;
@@ -63,10 +65,15 @@ function create () {
     this.bg2.setScrollFactor(0);
     // this.bg2.setScale(0.73,1);
 
-    var upgadePanel = this.add.rectangle(110, game.config.height/2, 200, game.config.height-20, eggShellColor);
+    var upgradePanel = this.add.rectangle(110, game.config.height/2, 200, game.config.height-20, eggShellColor);
+    upgradePanel.setStrokeStyle(5, 0x000000);
 
-    upgadePanel.setStrokeStyle(5, 0x000000);
-    
+    var buyBabyButton = this.add.rectangle(upgradePanel.x, 50, 150, 50);
+    this.add.text(buyBabyButton.x, buyBabyButton.y, 'Buy Baby T-rex', { fill: '#000000'}).setOrigin(0.5);
+    this.add.image(buyBabyButton.x, buyBabyButton.y + 64, 'trex');
+
+    upgradeButtons.push(buyBabyButton);
+
     var clickerData = [
         {name: 'T-Rex', image: 'trex'},
         {name: 'Velociraptor', image: 'velociraptor'},
@@ -78,14 +85,15 @@ function create () {
     clicker = this.add.sprite(this.game.config.width/2, this.game.config.height/2, 'trex').setInteractive({
         pixelPerfect: true
     });
+    clicker.setScale(2);
 
     eggCountText = this.add.text(
-        clicker.x - clicker.displayWidth/2, 0, 'Eggs: ' + formatEggCount(eggCount), 
+        clicker.x - clicker.displayWidth/2, 10, 'Eggs: ' + formatEggCount(eggCount), 
         { fontSize: '20px', fill: '#ffffff' }
     );
     
     eggsPerSecondText = this.add.text(
-        clicker.x - clicker.displayWidth/2, eggCountText.displayHeight, 'Eggs Per Second: ' + formatEggCount(eggsPerSecond), 
+        clicker.x - clicker.displayWidth/2, this.game.config.height - 30, 'Eggs Per Second: ' + formatEggCount(eggsPerSecond), 
         {fontSize: '20px', fill: '#ffffff' }
     );
       
@@ -93,7 +101,7 @@ function create () {
 }
 
 function update () {
-    var promptText = this.add.text(clicker.x - clicker.displayWidth/2, clicker.y + clicker.displayHeight/2, 'Make some eggs!',
+    var promptText = this.add.text(clicker.x - clicker.displayWidth/2, clicker.y + clicker.displayHeight/2, 'Click to make some eggs!',
         {fontSize: '20px', fill: '#ffffff' }
     );
 
