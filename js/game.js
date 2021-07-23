@@ -29,11 +29,11 @@ var producerData = [
 
 var playerWonGame = false;
 
+var timer = 0;
+
 var clickerIdx = 0;
 var clicker;
 var clickerPower = 1;
-
-var timer = 0;
 
 var babyPower = 1;
 var babyCost = 10;
@@ -119,6 +119,8 @@ function clickedUpgrade() {
 function getStoredValues() {
     playerWonGame = localStorage.getItem('isWinner') || false;
 
+    timer = parseInt(localStorage.getItem('totalTimePlayed')) || 0;
+
     clickerIdx = parseInt(localStorage.getItem('clickerIdx')) || 0;
     clickerPower = parseInt(localStorage.getItem('clickerPower')) || 1;
 
@@ -138,6 +140,9 @@ function getStoredValues() {
 function resetGameValues() {
     localStorage.setItem('isWinner', false);
     playerWonGame = false;
+
+    localStorage.setItem('totalTimePlayed', 0);
+    timer = 0;
 
     localStorage.setItem('clickerIdx', 0);
     clickerIdx = 0;
@@ -280,12 +285,12 @@ function update () {
     babyImage.setTexture(clickerData[clickerIdx].image);
     babyCostText.setText('Price: ' + babyCost);
 
-    if (!playerWonGame) {
-        upgradeText.setText('(D)Evolve to\n' + producerData[clickerIdx+1].name);
-        upgradeCostText.setText('Price: ' + upgradeCost);
-    } else {
+    if (playerWonGame == true) {
         upgradeText.setText('EGGxcellent!\nEGGxtraordinary!\nEGGxquisite!');
         upgradeCostText.setText('YOU WIN!');
+    } else {
+        upgradeText.setText('(D)Evolve to\n' + producerData[clickerIdx+1].name);
+        upgradeCostText.setText('Price: ' + upgradeCost);
     }
     upgradeImage.setTexture(clickerData[clickerIdx+1].image);
 
@@ -303,6 +308,8 @@ function update () {
     
     localStorage.setItem('isWinner', playerWonGame);
 
+    localStorage.setItem('totalTimePlayed', timer);
+
     localStorage.setItem('clickerIdx', clickerIdx);
     localStorage.setItem('clickerPower', clickerPower);
 
@@ -317,7 +324,6 @@ function update () {
     localStorage.setItem('timesClicked', timesClicked);
     localStorage.setItem('totalEggs', totalEggs);
     localStorage.setItem('eggsSpent', eggsSpent);
-    // TODO: total time played, prices, evolution stage
 
     clock = now;
 }
