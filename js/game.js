@@ -14,7 +14,8 @@ var clickerData = [
     {name: 'Velociraptor', image: 'velociraptor'},
     {name: 'Dinobird', image: 'dinobird'},
     {name: 'Chickensaur', image: 'chickensaur'},
-    {name: 'Chicken', image: 'chicken'}
+    {name: 'Chicken', image: 'chicken'},
+    {name: 'WINNER', image: 'blank'}
 ];
 
 var producerData = [
@@ -22,8 +23,11 @@ var producerData = [
     {name: 'Velociraptor', image: 'velociraptorP'},
     {name: 'Dinobird', image: 'dinobirdP'},
     {name: 'Chickensaur', image: 'chickensaurP'},
-    {name: 'Chicken', image: 'chickenP'}
+    {name: 'Chicken', image: 'chickenP'},
+    {name: 'WINNER', image: 'blank'}
 ];
+
+var playerWonGame = false;
 
 var clickerIdx = 0;
 var clicker;
@@ -31,16 +35,18 @@ var clickerPower = 1;
 
 var timer = 0;
 
+var babyPower = 1;
 var buyCost = 10;
 var buyBabyButton;
 var babyText;
+var babyImage;
 var babyCostText;
 
 var upgradeCost = 100;
 var buyUpgradeButton;
 var upgradeText;
+var upgradeImage;
 var upgradeCostText;
-var babyPower = 1;
 
 var eggCount = 0;
 var eggCountText;
@@ -79,12 +85,20 @@ function clickedBuyBaby() {
 }
 
 function clickedUpgrade() {
-    if (clickerIdx < 4 && eggCount > upgradeCost) {
+    if (playerWonGame) {
+        return;
+    }
+
+    if (eggCount > upgradeCost) {
         eggCount -= upgradeCost;
         upgradeCost *= 10;
-        clickerPower *= 2;
+        clickerPower *= 10;
+        babyPower *= 4;
 
         clickerIdx++;
+        if (clickerIdx == 4) {
+            playerWonGame = true;
+        }
     }
 }
 
@@ -101,6 +115,7 @@ function preload () {
     this.load.image('chickensaur', 'assets/images/clicker/chickensaur.png');
     this.load.image('chicken', 'assets/images/clicker/chicken.png');
 
+    this.load.image('blank', 'assets/images/producer/blank.png');
     this.load.image('trexP', 'assets/images/producer/trex.png');
     this.load.image('velociraptorP', 'assets/images/producer/velociraptor.png');
     this.load.image('dinobirdP', 'assets/images/producer/dinobird.png');
@@ -127,16 +142,18 @@ function create () {
     var upgradePanel = this.add.rectangle(110, game.config.height/2, 200, game.config.height-20, eggShellColor);
     upgradePanel.setStrokeStyle(5, 0x000000);
 
-    buyBabyButton = this.add.sprite(upgradePanel.x, 150, producerData[clickerIdx].image).setInteractive({
+    buyBabyButton = this.add.sprite(upgradePanel.x, 150, 'blank').setInteractive({
         pixelPerfect: true
     });
     babyText = this.add.text(buyBabyButton.x, buyBabyButton.y - buyBabyButton.height/2 - 30, 'Buy Baby\n' + producerData[clickerIdx].name, { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
-    this.add.image(buyBabyButton.x, buyBabyButton.y, clickerData[clickerIdx].image);
+    babyImage = this.add.image(buyBabyButton.x, buyBabyButton.y, 'blank');
     babyCostText = this.add.text(buyBabyButton.x, buyBabyButton.y + buyBabyButton.height/2 + 20, 'Price: ' + buyCost, { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
 
-    buyUpgradeButton = this.add.rectangle(upgradePanel.x, 450, 150, 150, upgradeColor);
+    buyUpgradeButton = this.add.sprite(upgradePanel.x, 450, 'blank').setInteractive({
+        pixelPerfect: true
+    });
     upgradeText = this.add.text(buyUpgradeButton.x, buyUpgradeButton.y - buyUpgradeButton.height/2 - 30, '(D)Evolve to\n' + producerData[clickerIdx+1].name, { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
-    this.add.image(buyUpgradeButton.x, buyUpgradeButton.y, clickerData[clickerIdx+1].image);
+    upgradeImage = this.add.image(buyUpgradeButton.x, buyUpgradeButton.y, 'blank');
     upgradeCostText = this.add.text(buyUpgradeButton.x, buyUpgradeButton.y + buyUpgradeButton.height/2 + 20, 'Price: ' + upgradeCost, { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
 
     upgradeButtons.push(buyBabyButton);
@@ -183,6 +200,21 @@ function update () {
     timer += dt;
     playTime.setText(Math.round(timer));
     
+    babyText.setText('Buy Baby\n' + producerData[clickerIdx].name);
+    babyImage.setTexture(clickerData[clickerIdx].image);
+    babyCostText.setText('Price: ' + buyCost);
+
+    if (!playerWonGame) {
+        upgradeText.setText('(D)Evolve to\n' + producerData[clickerIdx+1].name);
+        upgradeCostText.setText('Price: ' + upgradeCost);
+    } else {
+        upgradeText.setText('EGGxcellent!\nEGGxtraordinary!\nEGGxquisite!');
+        upgradeCostText.setText('YOU WIN!');
+    }
+    upgradeImage.setTexture(clickerData[clickerIdx+1].image);
+
+    clicker.setTexture(clickerData[clickerIdx].image);
+
     totalEggs += dt * eggsPerSecond;
     totalEggsCountText.setText(formatEggCount(Math.round(totalEggs)));
 
@@ -194,7 +226,7 @@ function update () {
     localStorage.setItem('eggCount', eggCount);
     localStorage.setItem('totalEggs', totalEggs);
     localStorage.setItem('eggsPerSecond', eggsPerSecond);
-    // TODO: total time played, eggs spent, times clicked
+    // TODO: total time played, eggs spent, times clicked, prices, evolution stage
 
     clock = now;
 }
