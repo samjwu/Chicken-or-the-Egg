@@ -12,7 +12,7 @@ var config = {
 var clicker = null;
 var clickerPower = 1;
 
-var timer;
+var timer = 0;
 
 var eggCount = 0;
 var eggCountText = null;
@@ -21,6 +21,8 @@ var eggsPerSecond = 0;
 var eggsPerSecondText = null;
 
 var upgradeButtons = [];
+var infoPanel;
+var playTime;
 
 var game = new Phaser.Game(config);
 
@@ -82,6 +84,11 @@ function create () {
     upgradeButtons.push(buyBabyButton);
     upgradeButtons.push(buyUpgradeButton);
 
+    infoPanel = this.add.rectangle(game.config.width - 110, game.config.height/2, 200, game.config.height-20, eggShellColor);
+    infoPanel.setStrokeStyle(5, 0x000000);
+    this.add.text(infoPanel.x, 40, 'Seconds played\nthis session:', { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
+    playTime = this.add.text(infoPanel.x, 80, formatEggCount(timer), { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
+
     var clickerData = [
         {name: 'T-Rex', image: 'trex'},
         {name: 'Velociraptor', image: 'velociraptor'},
@@ -115,6 +122,8 @@ function update () {
 
     var now = game.getTime();
     var dt = (now - clock) / 1000;
+    timer += dt;
+    playTime.setText(Math.round(timer));
     
     eggCount += dt * eggsPerSecond;
     eggCountText.setText('Eggs: ' + formatEggCount(Math.round(eggCount)));
