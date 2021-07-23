@@ -15,7 +15,7 @@ var clickerData = [
     {name: 'Dinobird', image: 'dinobird'},
     {name: 'Chickensaur', image: 'chickensaur'},
     {name: 'Chicken', image: 'chicken'},
-    {name: 'WINNER', image: 'blank'}
+    {name: 'WINNER', image: 'winner'}
 ];
 
 var producerData = [
@@ -24,7 +24,7 @@ var producerData = [
     {name: 'Dinobird', image: 'dinobirdP'},
     {name: 'Chickensaur', image: 'chickensaurP'},
     {name: 'Chicken', image: 'chickenP'},
-    {name: 'WINNER', image: 'blank'}
+    {name: 'WINNER', image: 'winner'}
 ];
 
 var playerWonGame = false;
@@ -97,7 +97,8 @@ function clickedBuyBaby() {
 }
 
 function clickedUpgrade() {
-    if (playerWonGame) {
+    if (playerWonGame == true) {
+        playerWonGame = true;
         return;
     }
 
@@ -147,7 +148,7 @@ function resetGameValues() {
     localStorage.setItem('clickerIdx', 0);
     clickerIdx = 0;
     localStorage.setItem('clickerPower', 1);
-    clickerPower = 1;
+    clickerPower = 199999999;
 
     localStorage.setItem('babyPower', 1);
     babyPower = 1;
@@ -187,6 +188,7 @@ function preload () {
     this.load.image('chickensaurP', 'assets/images/producer/chickensaur.png');
     this.load.image('chickenP', 'assets/images/producer/chicken.png');
 
+    this.load.image('winner', 'assets/images/other/winner.png');
     this.load.image('resetButton', 'assets/images/other/reset.png');
 }
 
@@ -225,7 +227,7 @@ function create () {
 
     infoPanel = this.add.rectangle(game.config.width - 110, game.config.height/2, 200, game.config.height-20, eggShellColor);
     infoPanel.setStrokeStyle(5, 0x000000);
-    this.add.text(infoPanel.x, 40, 'Seconds played\nthis session:', { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
+    this.add.text(infoPanel.x, 40, 'Total seconds\nplayed:', { fontSize: '19px', fill: '#000000'}).setOrigin(0.5);
     playTime = this.add.text(infoPanel.x, 80, formatEggCount(timer), { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
 
     clicker = this.add.sprite(this.game.config.width/2, this.game.config.height/2, clickerData[clickerIdx].image).setInteractive({
@@ -285,9 +287,10 @@ function update () {
     babyImage.setTexture(clickerData[clickerIdx].image);
     babyCostText.setText('Price: ' + babyCost);
 
-    if (playerWonGame == true) {
+    if (playerWonGame == true || clickerIdx == 4) {
         upgradeText.setText('EGGxcellent!\nEGGxtraordinary!\nEGGxquisite!');
-        upgradeCostText.setText('YOU WIN!');
+        buyUpgradeButton.setInteractive(false);
+        upgradeCostText.setText('WINNER WINNER\nCHICKEN DINNER!');
     } else {
         upgradeText.setText('(D)Evolve to\n' + producerData[clickerIdx+1].name);
         upgradeCostText.setText('Price: ' + upgradeCost);
