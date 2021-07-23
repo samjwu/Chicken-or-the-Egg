@@ -36,7 +36,7 @@ var clickerPower = 1;
 var timer = 0;
 
 var babyPower = 1;
-var buyCost = 10;
+var babyCost = 10;
 var buyBabyButton;
 var babyText;
 var babyImage;
@@ -87,12 +87,12 @@ function clickedClicker() {
 }
 
 function clickedBuyBaby() {
-    if (eggCount > buyCost) {
-        eggCount -= buyCost;
-        buyCost *= 2;
+    if (eggCount > babyCost) {
+        eggCount -= babyCost;
+        babyCost *= 2;
         eggsPerSecond += babyPower;
 
-        eggsSpent += buyCost;
+        eggsSpent += babyCost;
     }
 }
 
@@ -116,7 +116,17 @@ function clickedUpgrade() {
     }
 }
 
-function getScore() {
+function getStoredValues() {
+    playerWonGame = localStorage.getItem('isWinner') || false;
+
+    clickerIdx = parseInt(localStorage.getItem('clickerIdx')) || 0;
+    clickerPower = parseInt(localStorage.getItem('clickerPower')) || 1;
+
+    babyPower = parseInt(localStorage.getItem('babyPower')) || 1;
+    babyCost = parseInt(localStorage.getItem('babyCost')) || 10;
+
+    upgradeCost = parseInt(localStorage.getItem('upgradeCost')) || 100;
+
     eggCount = parseInt(localStorage.getItem('eggCount')) || 0;
     eggsPerSecond = parseInt(localStorage.getItem('eggsPerSecond')) || 0;
 
@@ -125,7 +135,40 @@ function getScore() {
     eggsSpent = parseInt(localStorage.getItem('eggsSpent')) || 0;
 }
 
+function resetGameValues() {
+    localStorage.setItem('isWinner', false);
+    playerWonGame = false;
+
+    localStorage.setItem('clickerIdx', 0);
+    clickerIdx = 0;
+    localStorage.setItem('clickerPower', 1);
+    clickerPower = 1;
+
+    localStorage.setItem('babyPower', 1);
+    babyPower = 1;
+    localStorage.setItem('babyCost', 10);
+    babyCost = 10;
+
+    localStorage.setItem('upgradeCost', 100);
+    upgradeCost = 100;
+
+    localStorage.setItem('eggCount', 0);
+    eggCount = 0;
+    localStorage.setItem('eggsPerSecond', 0);
+    eggsPerSecond = 0;
+    
+    localStorage.setItem('timesClicked', 0);
+    timesClicked = 0;
+    localStorage.setItem('totalEggs', 0);
+    totalEggs = 0;
+    localStorage.setItem('eggsSpent', 0);
+    eggsSpent = 0;
+}
+
 function preload () {
+    this.load.image('forest-front', 'assets/images/backgrounds/parallax/battleback1-1.png');
+    this.load.image('forest-back', 'assets/images/backgrounds/parallax/battleback1-2.png');
+
     this.load.image('trex', 'assets/images/clicker/trex.png');
     this.load.image('velociraptor', 'assets/images/clicker/velociraptor.png');
     this.load.image('dinobird', 'assets/images/clicker/dinobird.png');
@@ -139,12 +182,11 @@ function preload () {
     this.load.image('chickensaurP', 'assets/images/producer/chickensaur.png');
     this.load.image('chickenP', 'assets/images/producer/chicken.png');
 
-    this.load.image('forest-front', 'assets/images/backgrounds/parallax/battleback1-1.png');
-    this.load.image('forest-back', 'assets/images/backgrounds/parallax/battleback1-2.png');
+    this.load.image('resetButton', 'assets/images/other/reset.png');
 }
 
 function create () {
-    getScore();
+    getStoredValues();
 
     clock = game.getTime();
 
@@ -164,7 +206,7 @@ function create () {
     });
     babyText = this.add.text(buyBabyButton.x, buyBabyButton.y - buyBabyButton.height/2 - 30, 'Buy Baby\n' + producerData[clickerIdx].name, { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
     babyImage = this.add.image(buyBabyButton.x, buyBabyButton.y, 'blank');
-    babyCostText = this.add.text(buyBabyButton.x, buyBabyButton.y + buyBabyButton.height/2 + 20, 'Price: ' + buyCost, { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
+    babyCostText = this.add.text(buyBabyButton.x, buyBabyButton.y + buyBabyButton.height/2 + 20, 'Price: ' + babyCost, { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
 
     buyUpgradeButton = this.add.sprite(upgradePanel.x, 450, 'blank').setInteractive({
         pixelPerfect: true
@@ -186,6 +228,10 @@ function create () {
     });
     clicker.setScale(2);
 
+    resetButton = this.add.sprite(infoPanel.x, this.game.config.height - 40, 'resetButton').setInteractive({
+        pixelPerfect: true
+    });
+
     eggCountText = this.add.text(
         clicker.x - clicker.displayWidth/2, 10, 'Eggs: ' + formatEggCount(eggCount), 
         { fontSize: '20px', fill: '#ffffff' }
@@ -203,20 +249,21 @@ function create () {
     timesClickedCountText = this.add.text(infoPanel.x, 140, formatEggCount(timer), { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
 
     totalEggsText = this.add.text(
-        infoPanel.x, 240, 'Total Eggs Made:', 
+        infoPanel.x, 180, 'Total Eggs Made:', 
         { fontSize: '19px', fill: '#000000' }
     ).setOrigin(0.5);
-    totalEggsCountText = this.add.text(infoPanel.x, 260, formatEggCount(timer), { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
+    totalEggsCountText = this.add.text(infoPanel.x, 200, formatEggCount(timer), { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
     
     eggsSpentText = this.add.text(
-        infoPanel.x, 180, 'Total Eggs Spent:', 
+        infoPanel.x, 240, 'Total Eggs Spent:', 
         { fontSize: '19px', fill: '#000000' }
     ).setOrigin(0.5);
-    eggsSpentCountText = this.add.text(infoPanel.x, 200, formatEggCount(timer), { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
+    eggsSpentCountText = this.add.text(infoPanel.x, 260, formatEggCount(timer), { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
       
     buyBabyButton.on('pointerdown', clickedBuyBaby);
     buyUpgradeButton.on('pointerdown', clickedUpgrade)
     clicker.on('pointerdown', clickedClicker);
+    resetButton.on('pointerdown', resetGameValues);
 }
 
 function update () {
@@ -231,7 +278,7 @@ function update () {
     
     babyText.setText('Buy Baby\n' + producerData[clickerIdx].name);
     babyImage.setTexture(clickerData[clickerIdx].image);
-    babyCostText.setText('Price: ' + buyCost);
+    babyCostText.setText('Price: ' + babyCost);
 
     if (!playerWonGame) {
         upgradeText.setText('(D)Evolve to\n' + producerData[clickerIdx+1].name);
@@ -254,6 +301,16 @@ function update () {
     totalEggsCountText.setText(formatEggCount(Math.round(totalEggs)));
     eggsSpentCountText.setText(formatEggCount(Math.round(eggsSpent)));
     
+    localStorage.setItem('isWinner', playerWonGame);
+
+    localStorage.setItem('clickerIdx', clickerIdx);
+    localStorage.setItem('clickerPower', clickerPower);
+
+    localStorage.setItem('babyPower', babyPower);
+    localStorage.setItem('babyCost', babyCost);
+
+    localStorage.setItem('upgradeCost', upgradeCost);
+
     localStorage.setItem('eggCount', eggCount);
     localStorage.setItem('eggsPerSecond', eggsPerSecond);
     
