@@ -51,6 +51,9 @@ var upgradeCostText;
 var eggCount = 0;
 var eggCountText;
 
+var eggsPerSecond = 0;
+var eggsPerSecondText;
+
 var totalEggs = 0;
 var totalEggsText;
 var totalEggsCountText;
@@ -59,8 +62,9 @@ var eggsSpent = 0;
 var eggsSpentText;
 var eggsSpentCountText;
 
-var eggsPerSecond = 0;
-var eggsPerSecondText;
+var timesClicked = 0;
+var timesClickedText;
+var timesClickedCountText;
 
 var upgradeButtons = [];
 var infoPanel;
@@ -78,6 +82,8 @@ const formatEggCount = (eggs) => {
 function clickedClicker() {
     eggCount += clickerPower;
     totalEggs += clickerPower;
+
+    timesClicked++;
 }
 
 function clickedBuyBaby() {
@@ -85,6 +91,8 @@ function clickedBuyBaby() {
         eggCount -= buyCost;
         buyCost *= 2;
         eggsPerSecond += babyPower;
+
+        eggsSpent += buyCost;
     }
 }
 
@@ -99,6 +107,8 @@ function clickedUpgrade() {
         clickerPower *= 10;
         babyPower *= 4;
 
+        eggsSpent += upgradeCost;
+
         clickerIdx++;
         if (clickerIdx == 4) {
             playerWonGame = true;
@@ -110,6 +120,7 @@ function getScore() {
     eggCount = parseInt(localStorage.getItem('eggCount')) || 0;
     eggsPerSecond = parseInt(localStorage.getItem('eggsPerSecond')) || 0;
 
+    timesClicked = parseInt(localStorage.getItem('timesClicked')) || 0;
     totalEggs = parseInt(localStorage.getItem('totalEggs')) || 0;
     eggsSpent = parseInt(localStorage.getItem('eggsSpent')) || 0;
 }
@@ -185,11 +196,17 @@ function create () {
         {fontSize: '20px', fill: '#ffffff' }
     );
 
-    totalEggsText = this.add.text(
-        infoPanel.x, 120, 'Total Eggs Made:', 
+    timesClickedText = this.add.text(
+        infoPanel.x, 120, 'Times Clicked:', 
         { fontSize: '19px', fill: '#000000' }
     ).setOrigin(0.5);
-    totalEggsCountText = this.add.text(infoPanel.x, 140, formatEggCount(timer), { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
+    timesClickedCountText = this.add.text(infoPanel.x, 140, formatEggCount(timer), { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
+
+    totalEggsText = this.add.text(
+        infoPanel.x, 240, 'Total Eggs Made:', 
+        { fontSize: '19px', fill: '#000000' }
+    ).setOrigin(0.5);
+    totalEggsCountText = this.add.text(infoPanel.x, 260, formatEggCount(timer), { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
     
     eggsSpentText = this.add.text(
         infoPanel.x, 180, 'Total Eggs Spent:', 
@@ -232,17 +249,18 @@ function update () {
 
     eggsPerSecondText.setText('Eggs Per Second: ' + formatEggCount(Math.round(eggsPerSecond)));
     
+    timesClickedCountText.setText(formatEggCount(timesClicked));
     totalEggs += dt * eggsPerSecond;
     totalEggsCountText.setText(formatEggCount(Math.round(totalEggs)));
-
     eggsSpentCountText.setText(formatEggCount(Math.round(eggsSpent)));
     
     localStorage.setItem('eggCount', eggCount);
     localStorage.setItem('eggsPerSecond', eggsPerSecond);
-
+    
+    localStorage.setItem('timesClicked', timesClicked);
     localStorage.setItem('totalEggs', totalEggs);
     localStorage.setItem('eggsSpent', eggsSpent);
-    // TODO: total time played,, times clicked, prices, evolution stage
+    // TODO: total time played, prices, evolution stage
 
     clock = now;
 }
