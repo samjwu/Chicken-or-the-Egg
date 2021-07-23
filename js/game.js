@@ -9,10 +9,23 @@ var config = {
     }
 };
 
+var clickerData = [
+    {name: 'T-Rex', image: 'trex'},
+    {name: 'Velociraptor', image: 'velociraptor'},
+    {name: 'Dinobird', image: 'dinobird'},
+    {name: 'Chickensaur', image: 'chickensaur'},
+    {name: 'Chicken', image: 'chicken'}
+];
+
+var clickerIdx = 0;
 var clicker;
 var clickerPower = 1;
+var babyPower = 1;
 
 var timer = 0;
+
+var buyCost = 10;
+var upgradeCost = 100;
 
 var eggCount = 0;
 var eggCountText;
@@ -42,6 +55,16 @@ function clickedClicker() {
     totalEggs += clickerPower;
 }
 
+function clickedBuyBaby() {
+    if (eggCount > buyCost) {
+
+    }
+}
+
+function clickedUpgrade() {
+
+}
+
 function getScore() {
     eggCount = parseInt(localStorage.getItem('eggCount')) || 0;
     totalEggs = parseInt(localStorage.getItem('totalEggs')) || 0;
@@ -67,25 +90,23 @@ function create () {
     this.bg1 = this.add.tileSprite(0, 0, game.config.width, game.config.height, "forest-front");
     this.bg1.setOrigin(0, 0);
     this.bg1.setScrollFactor(0);
-    // this.bg1.setScale(0.73,1);
     
     this.bg2 = this.add.tileSprite(0, 0, game.config.width, game.config.height, "forest-back");
     this.bg2.setOrigin(0, 0);
     this.bg2.setScrollFactor(0);
-    // this.bg2.setScale(0.73,1);
 
     var upgradePanel = this.add.rectangle(110, game.config.height/2, 200, game.config.height-20, eggShellColor);
     upgradePanel.setStrokeStyle(5, 0x000000);
 
     var buyBabyButton = this.add.rectangle(upgradePanel.x, 150, 150, 150, upgradeColor);
-    this.add.text(buyBabyButton.x, buyBabyButton.y - buyBabyButton.height/2 - 30, 'Buy\nBaby T-rex', { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
-    this.add.image(buyBabyButton.x, buyBabyButton.y, 'trex');
-    this.add.text(buyBabyButton.x, buyBabyButton.y + buyBabyButton.height/2 + 20, 'Price: 10', { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
+    this.add.text(buyBabyButton.x, buyBabyButton.y - buyBabyButton.height/2 - 30, 'Buy Baby\n' + clickerData[clickerIdx].name, { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
+    this.add.image(buyBabyButton.x, buyBabyButton.y, clickerData[clickerIdx].image);
+    this.add.text(buyBabyButton.x, buyBabyButton.y + buyBabyButton.height/2 + 20, 'Price: ' + buyCost, { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
 
     var buyUpgradeButton = this.add.rectangle(upgradePanel.x, 450, 150, 150, upgradeColor);
-    this.add.text(buyUpgradeButton.x, buyUpgradeButton.y - buyUpgradeButton.height/2 - 30, '(D)Evolve to\nVelociraptor', { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
-    this.add.image(buyUpgradeButton.x, buyUpgradeButton.y, 'velociraptor');
-    this.add.text(buyUpgradeButton.x, buyUpgradeButton.y + buyUpgradeButton.height/2 + 20, 'Price: 100', { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
+    this.add.text(buyUpgradeButton.x, buyUpgradeButton.y - buyUpgradeButton.height/2 - 30, '(D)Evolve to\n' + clickerData[clickerIdx+1].name, { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
+    this.add.image(buyUpgradeButton.x, buyUpgradeButton.y, clickerData[clickerIdx+1].image);
+    this.add.text(buyUpgradeButton.x, buyUpgradeButton.y + buyUpgradeButton.height/2 + 20, 'Price: ' + upgradeCost, { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
 
     upgradeButtons.push(buyBabyButton);
     upgradeButtons.push(buyUpgradeButton);
@@ -94,14 +115,6 @@ function create () {
     infoPanel.setStrokeStyle(5, 0x000000);
     this.add.text(infoPanel.x, 40, 'Seconds played\nthis session:', { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
     playTime = this.add.text(infoPanel.x, 80, formatEggCount(timer), { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
-
-    var clickerData = [
-        {name: 'T-Rex', image: 'trex'},
-        {name: 'Velociraptor', image: 'velociraptor'},
-        {name: 'Dinobird', image: 'dinobird'},
-        {name: 'Chickensaur', image: 'chickensaur'},
-        {name: 'Chicken', image: 'chicken'}
-    ];
 
     clicker = this.add.sprite(this.game.config.width/2, this.game.config.height/2, 'trex').setInteractive({
         pixelPerfect: true
@@ -124,6 +137,8 @@ function create () {
         {fontSize: '20px', fill: '#ffffff' }
     );
       
+    buyBabyButton.on('pointerdown', clickedBuyBaby);
+    buyUpgradeButton.on('pointerdown', clickedUpgrade)
     clicker.on('pointerdown', clickedClicker);
 }
 
@@ -146,6 +161,7 @@ function update () {
     localStorage.setItem('eggCount', eggCount);
     localStorage.setItem('totalEggs', totalEggs);
     localStorage.setItem('eggsPerSecond', eggsPerSecond);
+    // TODO: total time played, eggs spent, times clicked
 
     clock = now;
 }
