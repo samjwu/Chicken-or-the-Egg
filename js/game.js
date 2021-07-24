@@ -83,8 +83,8 @@ var timer = 0;
 var backgroundImage;
 var foregroundImage;
 
-var musicPlayer;
-var sfxPlayer;
+var musicLibrary = [];
+var music;
 
 var clickerIdx = 0;
 var clicker;
@@ -134,6 +134,13 @@ const formatEggCount = (eggs) => {
     return eggs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 
+function playNewSong() {
+    music.stop();
+    music = musicLibrary[clickerIdx];
+    console.log(musicData[clickerIdx].song);
+    music.play();
+}
+
 function clickedClicker() {
     eggCount += clickerPower;
     totalEggs += clickerPower;
@@ -171,6 +178,8 @@ function clickedUpgrade() {
         if (clickerIdx == 4) {
             playerWonGame = true;
         }
+
+        playNewSong();
     }
 }
 
@@ -226,6 +235,8 @@ function resetGameValues() {
     totalEggs = 0;
     localStorage.setItem('eggsSpent', 0);
     eggsSpent = 0;
+
+    playNewSong();
 }
 
 function preload () {
@@ -274,6 +285,12 @@ function create () {
     getStoredValues();
 
     clock = game.getTime();
+
+    for (var i=0; i<musicData.length; i++) {
+        musicLibrary.push(this.sound.add(musicData[i].song, musicConfig));
+    }
+    music = musicLibrary[clickerIdx];
+    music.play();
 
     backgroundImage = this.bg1 = this.add.tileSprite(0, 0, game.config.width, game.config.height, backgroundData[clickerIdx*2+1].image);
     this.bg1.setOrigin(0, 0);
@@ -360,7 +377,7 @@ function update () {
     var dt = (now - clock) / 1000;
     timer += dt;
     playTime.setText(Math.round(timer));
-    
+
     backgroundImage.setTexture(backgroundData[clickerIdx*2+1].image);
     foregroundImage.setTexture(backgroundData[clickerIdx*2].image);
 
