@@ -90,6 +90,7 @@ var clickerIdx = 0;
 var clicker;
 var clickerPower = 1;
 var promptText;
+var eggsPerClickText;
 
 var babyPower = 1;
 var babyCost = 1;
@@ -197,16 +198,21 @@ function clickedUpgrade() {
     } else if (eggCount >= upgradeCost) {
         buyUpgradeButton.setScale(1);
         upgradeImage.setScale(1);
-
+        
+        eggsSpent += eggCount;
+        
         eggCount -= upgradeCost;
         upgradeCost *= 10;
         clickerPower *= 10;
         babyPower *= 10;
         babyCost = 1;
         eggsPerSecond = 0;
-
-        eggsSpent += upgradeCost;
-
+        
+        var prestigeBonus = eggCount / upgradeCost;
+        clickerPower = Math.round(clickerPower * (1 + prestigeBonus));
+        babyPower = Math.round(babyPower * (1 + prestigeBonus));
+        eggCount = 0;
+        
         clickerIdx++;
         if (clickerIdx == 4) {
             playerWonGame = true;
@@ -401,9 +407,16 @@ function create () {
         pixelPerfect: true
     });
 
+    resetConfirmation = this.add.container(this.game.config.width/2 - 100, this.game.config.height/2);
+
     eggCountText = this.add.text(
         clicker.x - clicker.displayWidth/2, 10, 'Eggs: ' + formatEggCount(eggCount), 
         { fontSize: '20px', fill: '#ffffff' }
+    );
+
+    eggsPerClickText = this.add.text(
+        clicker.x - clicker.displayWidth/2, this.game.config.height - 60, 'Eggs Per Click: ' + formatEggCount(clickerPower), 
+        {fontSize: '20px', fill: '#ffffff' }
     );
 
     eggsPerSecondText = this.add.text(
@@ -481,6 +494,7 @@ function update () {
     eggCount += dt * eggsPerSecond;
     eggCountText.setText('Eggs: ' + formatEggCount(Math.round(eggCount)));
 
+    eggsPerClickText.setText('Eggs Per Click: ' + formatEggCount(Math.round(clickerPower)));
     eggsPerSecondText.setText('Eggs Per Second: ' + formatEggCount(Math.round(eggsPerSecond)));
     
     timesClickedCountText.setText(formatEggCount(timesClicked));
