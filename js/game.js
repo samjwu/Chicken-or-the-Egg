@@ -40,6 +40,10 @@ var producerData = [
     {name: 'WINNER', image: 'winner'}
 ];
 
+var musicData = [
+    
+];
+
 var playerWonGame = false;
 
 var timer = 0;
