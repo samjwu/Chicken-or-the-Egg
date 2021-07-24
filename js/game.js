@@ -141,8 +141,21 @@ function playNewSong() {
     music.play();
 }
 
+function highlightBuyBaby() {
+    buyBabyButton.setScale(1.1);
+    babyImage.setScale(1.1);
+}
+
+function unhighlightBuyBaby() {
+    buyBabyButton.setScale(1);
+    babyImage.setScale(1);
+}
+
 function clickedBuyBaby() {
     if (eggCount > babyCost) {
+        buyBabyButton.setScale(1);
+        babyImage.setScale(1);
+        
         this.scene.sound.play(sfxData[clickerIdx].sound, sfxConfig);
 
         eggCount -= babyCost;
@@ -153,13 +166,28 @@ function clickedBuyBaby() {
     }
 }
 
-function clickedUpgrade() {
-    if (playerWonGame == true) {
-        playerWonGame = true;
-        return;
-    }
+function unclickedBuyBaby() {
+    buyBabyButton.setScale(1.1);
+    babyImage.setScale(1.1);
+}
 
-    if (eggCount > upgradeCost) {
+function highlightUpgrade() {
+    buyUpgradeButton.setScale(1.1);
+    upgradeImage.setScale(1.1);
+}
+
+function unhighlightUpgrade() {
+    buyUpgradeButton.setScale(1);
+    upgradeImage.setScale(1);
+}
+
+function clickedUpgrade() {
+    if (playerWonGame == true || clickerIdx == 4) {
+        this.scene.sound.play(sfxData[clickerIdx+1].sound, sfxConfig);
+    } else if (eggCount > upgradeCost) {
+        buyUpgradeButton.setScale(1);
+        upgradeImage.setScale(1);
+
         eggCount -= upgradeCost;
         upgradeCost *= 10;
         clickerPower *= 10;
@@ -178,6 +206,11 @@ function clickedUpgrade() {
     }
 }
 
+function unclickedUpgrade() {
+    buyUpgradeButton.setScale(1.1);
+    upgradeImage.setScale(1.1);
+}
+
 function highlightClicker() {
     clicker.setScale(3);
 }
@@ -187,10 +220,15 @@ function unhighlightClicker() {
 }
 
 function clickedClicker() {
+    clicker.setScale(2.75);
     eggCount += clickerPower;
     totalEggs += clickerPower;
 
     timesClicked++;
+}
+
+function unclickedClicker() {
+    clicker.setScale(3);
 }
 
 function getStoredValues() {
@@ -373,10 +411,17 @@ function create () {
     ).setOrigin(0.5);
     eggsSpentCountText = this.add.text(infoPanel.x, 260, formatEggCount(timer), { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
       
+    buyBabyButton.on('pointerover', highlightBuyBaby);
     buyBabyButton.on('pointerdown', clickedBuyBaby);
+    buyBabyButton.on('pointerup', unclickedBuyBaby);
+    buyBabyButton.on('pointerout', unhighlightBuyBaby);
+    buyUpgradeButton.on('pointerover', highlightUpgrade);
     buyUpgradeButton.on('pointerdown', clickedUpgrade)
+    buyUpgradeButton.on('pointerup', unclickedUpgrade);
+    buyUpgradeButton.on('pointerout', unhighlightUpgrade);
     clicker.on('pointerover', highlightClicker);
     clicker.on('pointerdown', clickedClicker);
+    clicker.on('pointerup', unclickedClicker);
     clicker.on('pointerout', unhighlightClicker);
     resetButton.on('pointerdown', resetGameValues);
 }
@@ -401,7 +446,7 @@ function update () {
 
     if (playerWonGame == true || clickerIdx == 4) {
         upgradeText.setText('EGGxcellent!\nEGGxtraordinary!\nEGGxquisite!');
-        buyUpgradeButton.setInteractive(false);
+        // buyUpgradeButton.setInteractive(false);
         upgradeCostText.setText('WINNER WINNER\nCHICKEN DINNER!');
     } else {
         upgradeText.setText('(D)Evolve to\n' + producerData[clickerIdx+1].name);
