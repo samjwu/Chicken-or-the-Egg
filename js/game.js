@@ -129,10 +129,19 @@ var timesClickedCountText;
 var infoPanel;
 var playTime;
 
+var resetButton;
+var confirmationBox;
+var yesUpgrade;
+var noUpgrade;
+var yesReset;
+var noReset;
+var confirmUpgradeText;
+var confirmResetText;
+
 var game = new Phaser.Game(config);
 
 const eggShellColor = 0xf0ead6;
-const upgradeColor = 0xffa500;
+const blackColor = 0x000000;
 
 const formatEggCount = (eggs) => {
     return eggs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -141,7 +150,6 @@ const formatEggCount = (eggs) => {
 function playNewSong() {
     music.stop();
     music = musicLibrary[clickerIdx];
-    console.log(musicData[clickerIdx].song);
     music.play();
 }
 
@@ -190,12 +198,42 @@ function unhighlightUpgrade() {
     upgradeImage.setScale(1);
 }
 
-function clickedUpgrade() {
-    cantBuyText.setText('');
+function hideUpgrade() {
+    confirmationBox.visible = false;
+    yesUpgrade.visible = false;
+    noUpgrade.visible = false;
+    yesUpgrade.setInteractive(false);
+    noUpgrade.setInteractive(false);
+    confirmUpgradeText.visible = false;
+}
 
+function confirmationUpgrade() {
+    confirmationBox.visible = true;
+    yesUpgrade.visible = true;
+    noUpgrade.visible = true;
+    yesUpgrade.setInteractive({
+        pixelPerfect: true
+    });
+    noUpgrade.setInteractive({
+        pixelPerfect: true
+    });
+    confirmUpgradeText.visible = true;
+    yesUpgrade.on('pointerdown', tryUpgrade);
+    noUpgrade.on('pointerdown', hideUpgrade);
+}
+
+function clickedUpgrade() {
     if (playerWonGame == true || clickerIdx == 4) {
         this.scene.sound.play(sfxData[clickerIdx+1].sound, sfxConfig);
-    } else if (eggCount >= upgradeCost) {
+    } else {
+        confirmationUpgrade();
+    }
+}
+
+function tryUpgrade() {
+    cantBuyText.setText('');
+
+    if (eggCount >= upgradeCost) {
         buyUpgradeButton.setScale(1);
         upgradeImage.setScale(1);
         
@@ -220,9 +258,12 @@ function clickedUpgrade() {
 
         playNewSong();
     } else {
+        console.log('fail upg');
         cantBuyText.setText('Not enough eggs to (d)evolve!');
         errorTextTimer = 3;
     }
+
+    hideUpgrade();
 }
 
 function unclickedUpgrade() {
@@ -271,7 +312,37 @@ function getStoredValues() {
     eggsSpent = parseInt(localStorage.getItem('eggsSpent')) || 0;
 }
 
+function hideReset() {
+    confirmationBox.visible = false;
+    yesReset.visible = false;
+    noReset.visible = false;
+    yesReset.setInteractive(false);
+    noReset.setInteractive(false);
+    confirmResetText.visible = false;
+}
+
+function confirmationReset() {
+    confirmationBox.visible = true;
+    yesReset.visible = true;
+    noReset.visible = true;
+    yesReset.setInteractive({
+        pixelPerfect: true
+    });
+    noReset.setInteractive({
+        pixelPerfect: true
+    });
+    confirmResetText.visible = true;
+    yesReset.on('pointerdown', resetGameValues);
+    noReset.on('pointerdown', hideReset);
+}
+
+function clickedReset() {
+    confirmationReset();
+}
+
 function resetGameValues() {
+    hideReset();
+
     localStorage.setItem('isWinner', false);
     playerWonGame = false;
 
@@ -281,7 +352,7 @@ function resetGameValues() {
     localStorage.setItem('clickerIdx', 0);
     clickerIdx = 0;
     localStorage.setItem('clickerPower', 1);
-    clickerPower = 199999999;
+    clickerPower = 1;
 
     localStorage.setItem('babyPower', 1);
     babyPower = 1;
@@ -345,6 +416,8 @@ function preload () {
     this.load.image('chickenP', 'assets/images/producer/chicken.png');
 
     this.load.image('winner', 'assets/images/other/winner.png');
+    this.load.image('yes', 'assets/images/other/yes.png');
+    this.load.image('no', 'assets/images/other/no.png');
     this.load.image('resetButton', 'assets/images/other/reset.png');
 }
 
@@ -368,7 +441,7 @@ function create () {
     this.bg2.setScrollFactor(0);
 
     var upgradePanel = this.add.rectangle(110, game.config.height/2, 200, game.config.height-20, eggShellColor);
-    upgradePanel.setStrokeStyle(5, 0x000000);
+    upgradePanel.setStrokeStyle(5, blackColor);
 
     buyBabyButton = this.add.sprite(upgradePanel.x, 150, 'blank').setInteractive({
         pixelPerfect: true
@@ -385,7 +458,7 @@ function create () {
     upgradeCostText = this.add.text(buyUpgradeButton.x, buyUpgradeButton.y + buyUpgradeButton.height/2 + 20, 'Price: ' + upgradeCost, { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
 
     infoPanel = this.add.rectangle(game.config.width - 110, game.config.height/2, 200, game.config.height-20, eggShellColor);
-    infoPanel.setStrokeStyle(5, 0x000000);
+    infoPanel.setStrokeStyle(5, blackColor);
     this.add.text(infoPanel.x, 40, 'Total seconds\nplayed:', { fontSize: '19px', fill: '#000000'}).setOrigin(0.5);
     playTime = this.add.text(infoPanel.x, 80, formatEggCount(timer), { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
 
@@ -407,7 +480,41 @@ function create () {
         pixelPerfect: true
     });
 
-    resetConfirmation = this.add.container(this.game.config.width/2 - 100, this.game.config.height/2);
+    confirmationBox = this.add.rectangle(this.game.config.width/2, this.game.config.height/2-100, 600, 300, eggShellColor);
+    confirmationBox.setStrokeStyle(5, blackColor);
+    yesUpgrade = this.add.sprite(confirmationBox.x - 200, confirmationBox.y + 100, 'yes');
+    noUpgrade = this.add.sprite(confirmationBox.x + 200, confirmationBox.y + 100, 'no');
+    yesReset = this.add.sprite(confirmationBox.x - 200, confirmationBox.y + 100, 'yes');
+    noReset = this.add.sprite(confirmationBox.x + 200, confirmationBox.y + 100, 'no');
+    confirmUpgradeText = this.add.text(
+        confirmationBox.x - 350, confirmationBox.y - 120, 
+        '        Are you sure you want to (d)evolve?\n\
+        This is equivalent to a soft reset/prestige.\n\n\
+        Your eggs and eggs per second will be set\n\
+        to 0, but in exchange you will have better\n\
+        egg production multipliers, depending on\n\
+        how many eggs you have when you (e)evolve.\n\n\
+        TLDR: More eggs before (d)evolve,\n\
+              More eggs you make after (d)evolve', 
+        { fontSize: '20px', fill: '#000000' }
+    );
+    confirmResetText = this.add.text(
+        confirmationBox.x - 350, confirmationBox.y - 120, 
+        '        Are you sure you want to reset?\n\
+        This is equivalent to a hard reset.\n\n\
+        It will return everything to as it originally\n\
+        was when the game began,\n\
+        and there is no benefit.\n\n\
+        TLDR: WHY WOULD YOU DO THIS???',  
+        { fontSize: '20px', fill: '#000000' }
+    );
+    confirmationBox.visible = false;
+    yesUpgrade.visible = false;
+    noUpgrade.visible = false;
+    yesReset.visible = false;
+    noReset.visible = false;
+    confirmUpgradeText.visible = false;
+    confirmResetText.visible = false;
 
     eggCountText = this.add.text(
         clicker.x - clicker.displayWidth/2, 10, 'Eggs: ' + formatEggCount(eggCount), 
@@ -454,7 +561,7 @@ function create () {
     clicker.on('pointerdown', clickedClicker);
     clicker.on('pointerup', unclickedClicker);
     clicker.on('pointerout', unhighlightClicker);
-    resetButton.on('pointerdown', resetGameValues);
+    resetButton.on('pointerdown', clickedReset);
 }
 
 function update () {
