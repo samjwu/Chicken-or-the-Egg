@@ -89,6 +89,7 @@ var music;
 var clickerIdx = 0;
 var clicker;
 var clickerPower = 1;
+var promptText;
 
 var babyPower = 1;
 var babyCost = 10;
@@ -121,7 +122,6 @@ var timesClicked = 0;
 var timesClickedText;
 var timesClickedCountText;
 
-var upgradeButtons = [];
 var infoPanel;
 var playTime;
 
@@ -139,13 +139,6 @@ function playNewSong() {
     music = musicLibrary[clickerIdx];
     console.log(musicData[clickerIdx].song);
     music.play();
-}
-
-function clickedClicker() {
-    eggCount += clickerPower;
-    totalEggs += clickerPower;
-
-    timesClicked++;
 }
 
 function clickedBuyBaby() {
@@ -183,6 +176,21 @@ function clickedUpgrade() {
 
         playNewSong();
     }
+}
+
+function highlightClicker() {
+    clicker.setScale(3);
+}
+
+function unhighlightClicker() {
+    clicker.setScale(2);
+}
+
+function clickedClicker() {
+    eggCount += clickerPower;
+    totalEggs += clickerPower;
+
+    timesClicked++;
 }
 
 function getStoredValues() {
@@ -319,9 +327,6 @@ function create () {
     upgradeImage = this.add.image(buyUpgradeButton.x, buyUpgradeButton.y, 'blank');
     upgradeCostText = this.add.text(buyUpgradeButton.x, buyUpgradeButton.y + buyUpgradeButton.height/2 + 20, 'Price: ' + upgradeCost, { fontSize: '20px', fill: '#000000'}).setOrigin(0.5);
 
-    upgradeButtons.push(buyBabyButton);
-    upgradeButtons.push(buyUpgradeButton);
-
     infoPanel = this.add.rectangle(game.config.width - 110, game.config.height/2, 200, game.config.height-20, eggShellColor);
     infoPanel.setStrokeStyle(5, 0x000000);
     this.add.text(infoPanel.x, 40, 'Total seconds\nplayed:', { fontSize: '19px', fill: '#000000'}).setOrigin(0.5);
@@ -331,6 +336,10 @@ function create () {
         pixelPerfect: true
     });
     clicker.setScale(2);
+
+    promptText = this.add.text(clicker.x - clicker.displayWidth/2, clicker.y + clicker.displayHeight/2, 'Click to make some eggs!',
+        {fontSize: '20px', fill: '#ffffff' }
+    );
 
     resetButton = this.add.sprite(infoPanel.x, this.game.config.height - 40, 'resetButton').setInteractive({
         pixelPerfect: true
@@ -366,12 +375,15 @@ function create () {
       
     buyBabyButton.on('pointerdown', clickedBuyBaby);
     buyUpgradeButton.on('pointerdown', clickedUpgrade)
+    clicker.on('pointerover', highlightClicker);
     clicker.on('pointerdown', clickedClicker);
+    clicker.on('pointerout', unhighlightClicker);
     resetButton.on('pointerdown', resetGameValues);
 }
 
 function update () {
-    var promptText = this.add.text(clicker.x - clicker.displayWidth/2, clicker.y + clicker.displayHeight/2, 'Click to make some eggs!',
+    promptText.destroy();
+    promptText = this.add.text(clicker.x - clicker.displayWidth/2, clicker.y + clicker.displayHeight/2, 'Click to make some eggs!',
         {fontSize: '20px', fill: '#ffffff' }
     );
 
