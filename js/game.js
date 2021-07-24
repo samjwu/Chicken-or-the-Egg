@@ -9,6 +9,19 @@ var config = {
     }
 };
 
+var backgroundData = [
+    {name: 'Green Forest Front', image: 'green-forest-front'},
+    {name: 'Green Forest Back', image: 'green-forest-back'},
+    {name: 'Yellow Forest Front', image: 'yellow-forest-front'},
+    {name: 'Yellow Forest Back', image: 'yellow-forest-back'},
+    {name: 'Red Forest Front', image: 'red-forest-front'},
+    {name: 'Red Forest Back', image: 'red-forest-back'},
+    {name: 'Ice Front', image: 'ice-front'},
+    {name: 'Ice Back', image: 'ice-back'},
+    {name: 'Farm Front', image: 'farm-front'},
+    {name: 'Farm Back', image: 'farm-back'},
+];
+
 var clickerData = [
     {name: 'T-Rex', image: 'trex'},
     {name: 'Velociraptor', image: 'velociraptor'},
@@ -172,8 +185,16 @@ function resetGameValues() {
 }
 
 function preload () {
-    this.load.image('forest-front', 'assets/images/backgrounds/parallax/battleback1-1.png');
-    this.load.image('forest-back', 'assets/images/backgrounds/parallax/battleback1-2.png');
+    this.load.image('green-forest-front', 'assets/images/backgrounds/parallax/battleback1-1.png');
+    this.load.image('green-forest-back', 'assets/images/backgrounds/parallax/battleback1-2.png');
+    this.load.image('yellow-forest-front', 'assets/images/backgrounds/parallax/battleback6-1.png');
+    this.load.image('yellow-forest-back', 'assets/images/backgrounds/parallax/battleback6-2.png');
+    this.load.image('red-forest-front', 'assets/images/backgrounds/parallax/battleback7-1.png');
+    this.load.image('red-forest-back', 'assets/images/backgrounds/parallax/battleback7-2.png');
+    this.load.image('ice-front', 'assets/images/backgrounds/parallax/battleback2-1.png');
+    this.load.image('ice-back', 'assets/images/backgrounds/parallax/battleback2-2.png');
+    this.load.image('farm-front', 'assets/images/backgrounds/parallax/battleback10-1.png');
+    this.load.image('farm-back', 'assets/images/backgrounds/parallax/battleback10-2.png');
 
     this.load.image('trex', 'assets/images/clicker/trex.png');
     this.load.image('velociraptor', 'assets/images/clicker/velociraptor.png');
@@ -197,11 +218,11 @@ function create () {
 
     clock = game.getTime();
 
-    this.bg1 = this.add.tileSprite(0, 0, game.config.width, game.config.height, "forest-front");
+    this.bg1 = this.add.tileSprite(0, 0, game.config.width, game.config.height, "green-forest-front");
     this.bg1.setOrigin(0, 0);
     this.bg1.setScrollFactor(0);
     
-    this.bg2 = this.add.tileSprite(0, 0, game.config.width, game.config.height, "forest-back");
+    this.bg2 = this.add.tileSprite(0, 0, game.config.width, game.config.height, "green-forest-back");
     this.bg2.setOrigin(0, 0);
     this.bg2.setScrollFactor(0);
 
