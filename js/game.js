@@ -92,7 +92,7 @@ var clickerPower = 1;
 var promptText;
 
 var babyPower = 1;
-var babyCost = 10;
+var babyCost = 1;
 var buyBabyButton;
 var babyText;
 var babyImage;
@@ -192,7 +192,7 @@ function clickedUpgrade() {
         upgradeCost *= 10;
         clickerPower *= 10;
         babyPower *= 10;
-        babyCost = 10;
+        babyCost = 1;
         eggsPerSecond = 0;
 
         eggsSpent += upgradeCost;
@@ -240,7 +240,7 @@ function getStoredValues() {
     clickerPower = parseInt(localStorage.getItem('clickerPower')) || 1;
 
     babyPower = parseInt(localStorage.getItem('babyPower')) || 1;
-    babyCost = parseInt(localStorage.getItem('babyCost')) || 10;
+    babyCost = parseInt(localStorage.getItem('babyCost')) || 1;
 
     upgradeCost = parseInt(localStorage.getItem('upgradeCost')) || 100;
 
@@ -266,8 +266,8 @@ function resetGameValues() {
 
     localStorage.setItem('babyPower', 1);
     babyPower = 1;
-    localStorage.setItem('babyCost', 10);
-    babyCost = 10;
+    localStorage.setItem('babyCost', 1);
+    babyCost = 1;
 
     localStorage.setItem('upgradeCost', 100);
     upgradeCost = 100;
@@ -446,7 +446,6 @@ function update () {
 
     if (playerWonGame == true || clickerIdx == 4) {
         upgradeText.setText('EGGxcellent!\nEGGxtraordinary!\nEGGxquisite!');
-        // buyUpgradeButton.setInteractive(false);
         upgradeCostText.setText('WINNER WINNER\nCHICKEN DINNER!');
     } else {
         upgradeText.setText('(D)Evolve to\n' + producerData[clickerIdx+1].name);
