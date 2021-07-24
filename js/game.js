@@ -170,7 +170,9 @@ function clickedUpgrade() {
         eggCount -= upgradeCost;
         upgradeCost *= 10;
         clickerPower *= 10;
-        babyPower *= 4;
+        babyPower *= 10;
+        babyCost = 10;
+        eggsPerSecond = 0;
 
         eggsSpent += upgradeCost;
 
