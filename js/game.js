@@ -9,6 +9,26 @@ var config = {
     }
 };
 
+var musicConfig = {
+    mute: false,
+    volume: 1,
+    rate: 1,
+    detune: 0,
+    seek: 0,
+    loop: true,
+    delay: 0
+};
+
+var sfxConfig = {
+    mute: false,
+    volume: 0.5,
+    rate: 1,
+    detune: 0,
+    seek: 0,
+    loop: false,
+    delay: 0
+};
+
 var backgroundData = [
     {name: 'Green Forest Front', image: 'green-forest-front'},
     {name: 'Green Forest Back', image: 'green-forest-back'},
@@ -62,6 +82,9 @@ var timer = 0;
 
 var backgroundImage;
 var foregroundImage;
+
+var musicPlayer;
+var sfxPlayer;
 
 var clickerIdx = 0;
 var clicker;
@@ -120,6 +143,8 @@ function clickedClicker() {
 
 function clickedBuyBaby() {
     if (eggCount > babyCost) {
+        this.scene.sound.play(sfxData[clickerIdx].sound, sfxConfig);
+
         eggCount -= babyCost;
         babyCost *= 2;
         eggsPerSecond += babyPower;
@@ -340,7 +365,7 @@ function update () {
     foregroundImage.setTexture(backgroundData[clickerIdx*2].image);
 
     babyText.setText('Buy Baby\n' + producerData[clickerIdx].name);
-    babyImage.setTexture(clickerData[clickerIdx].image);
+    babyImage.setTexture(producerData[clickerIdx].image);
     babyCostText.setText('Price: ' + babyCost);
 
     if (playerWonGame == true || clickerIdx == 4) {
@@ -351,7 +376,7 @@ function update () {
         upgradeText.setText('(D)Evolve to\n' + producerData[clickerIdx+1].name);
         upgradeCostText.setText('Price: ' + upgradeCost);
     }
-    upgradeImage.setTexture(clickerData[clickerIdx+1].image);
+    upgradeImage.setTexture(producerData[clickerIdx+1].image);
 
     clicker.setTexture(clickerData[clickerIdx].image);
 
