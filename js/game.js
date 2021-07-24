@@ -44,6 +44,9 @@ var playerWonGame = false;
 
 var timer = 0;
 
+var backgroundImage;
+var foregroundImage;
+
 var clickerIdx = 0;
 var clicker;
 var clickerPower = 1;
@@ -218,11 +221,11 @@ function create () {
 
     clock = game.getTime();
 
-    this.bg1 = this.add.tileSprite(0, 0, game.config.width, game.config.height, "green-forest-front");
+    backgroundImage = this.bg1 = this.add.tileSprite(0, 0, game.config.width, game.config.height, backgroundData[clickerIdx*2+1].image);
     this.bg1.setOrigin(0, 0);
     this.bg1.setScrollFactor(0);
-    
-    this.bg2 = this.add.tileSprite(0, 0, game.config.width, game.config.height, "green-forest-back");
+
+    foregroundImage = this.bg2 = this.add.tileSprite(0, 0, game.config.width, game.config.height, backgroundData[clickerIdx*2].image);
     this.bg2.setOrigin(0, 0);
     this.bg2.setScrollFactor(0);
 
@@ -304,6 +307,9 @@ function update () {
     timer += dt;
     playTime.setText(Math.round(timer));
     
+    backgroundImage.setTexture(backgroundData[clickerIdx*2+1].image);
+    foregroundImage.setTexture(backgroundData[clickerIdx*2].image);
+
     babyText.setText('Buy Baby\n' + producerData[clickerIdx].name);
     babyImage.setTexture(clickerData[clickerIdx].image);
     babyCostText.setText('Price: ' + babyCost);
