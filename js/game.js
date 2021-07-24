@@ -1,4 +1,4 @@
-var config = {
+const config = {
     type: Phaser.AUTO,
     width: 1100,
     height: 600,
@@ -29,7 +29,7 @@ var sfxConfig = {
     delay: 0
 };
 
-var backgroundData = [
+const backgroundData = [
     {name: 'Green Forest Front', image: 'green-forest-front'},
     {name: 'Green Forest Back', image: 'green-forest-back'},
     {name: 'Yellow Forest Front', image: 'yellow-forest-front'},
@@ -42,7 +42,7 @@ var backgroundData = [
     {name: 'Farm Back', image: 'farm-back'},
 ];
 
-var clickerData = [
+const clickerData = [
     {name: 'T-Rex', image: 'trex'},
     {name: 'Velociraptor', image: 'velociraptor'},
     {name: 'Dinobird', image: 'dinobird'},
@@ -50,7 +50,7 @@ var clickerData = [
     {name: 'Chicken', image: 'chicken'}
 ];
 
-var producerData = [
+const producerData = [
     {name: 'T-Rex', image: 'trexP'},
     {name: 'Velociraptor', image: 'velociraptorP'},
     {name: 'Dinobird', image: 'dinobirdP'},
@@ -59,7 +59,7 @@ var producerData = [
     {name: 'WINNER', image: 'winner'}
 ];
 
-var musicData = [
+const musicData = [
     {name: 'egg lsadsdlasd', song: 'egg_lsadsdlasd'},
     {name: 'Spelunky 2 - Egg radio', song: 'spelunky2_egg_radio'},
     {name: 'The hidden egg', song: 'the_hidden_egg'},
@@ -67,7 +67,7 @@ var musicData = [
     {name: 'The Song of Egg', song: 'the_song_of_egg'}
 ];
 
-var sfxData = [
+const sfxData = [
     {name: 'T-Rex Roar', sound: 'trex_roar'},
     {name: 'Velociraptor Roar', sound: 'velociraptor_roar'},
     {name: 'Dinobird Roar', sound: 'dinobird_roar'},
@@ -75,6 +75,15 @@ var sfxData = [
     {name: 'Chicken Roar', sound: 'chicken_roar'},
     {name: 'Chicken Man', sound: 'chicken_man'}
 ];
+
+const eggShellColor = 0xf0ead6;
+const blackColor = 0x000000;
+
+const formatEggCount = (eggs) => {
+    return eggs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+const startingBabyCost = 10;
 
 var playerWonGame = false;
 
@@ -93,7 +102,7 @@ var promptText;
 var eggsPerClickText;
 
 var babyPower = 1;
-var babyCost = 1;
+var babyCost = startingBabyCost;
 var buyBabyButton;
 var babyText;
 var babyImage;
@@ -129,6 +138,8 @@ var timesClickedCountText;
 var infoPanel;
 var playTime;
 
+var muteSfxButton;
+var unMuteSfxButton;
 var resetButton;
 var confirmationBox;
 var yesUpgrade;
@@ -140,11 +151,26 @@ var confirmResetText;
 
 var game = new Phaser.Game(config);
 
-const eggShellColor = 0xf0ead6;
-const blackColor = 0x000000;
+function muteSfx() {
+    sfxConfig.mute = true;
+    muteSfxButton.visible = false;
+    muteSfxButton.setInteractive(false);
 
-const formatEggCount = (eggs) => {
-    return eggs.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    unMuteSfxButton.visible = true;
+    unMuteSfxButton.setInteractive({
+        pixelPerfect: true
+    });
+}
+
+function unMuteSfx() {
+    sfxConfig.mute = false;
+    unMuteSfxButton.visible = false;
+    unMuteSfxButton.setInteractive(false);
+
+    muteSfxButton.visible = true;
+    muteSfxButton.setInteractive({
+        pixelPerfect: true
+    });
 }
 
 function playNewSong() {
@@ -243,7 +269,7 @@ function tryUpgrade() {
         upgradeCost *= 10;
         clickerPower *= 10;
         babyPower *= 10;
-        babyCost = 1;
+        babyCost = startingBabyCost;
         eggsPerSecond = 0;
         
         var prestigeBonus = eggCount / upgradeCost;
@@ -300,7 +326,7 @@ function getStoredValues() {
     clickerPower = parseInt(localStorage.getItem('clickerPower')) || 1;
 
     babyPower = parseInt(localStorage.getItem('babyPower')) || 1;
-    babyCost = parseInt(localStorage.getItem('babyCost')) || 1;
+    babyCost = parseInt(localStorage.getItem('babyCost')) || startingBabyCost;
 
     upgradeCost = parseInt(localStorage.getItem('upgradeCost')) || 100;
 
@@ -356,8 +382,8 @@ function resetGameValues() {
 
     localStorage.setItem('babyPower', 1);
     babyPower = 1;
-    localStorage.setItem('babyCost', 1);
-    babyCost = 1;
+    localStorage.setItem('babyCost', startingBabyCost);
+    babyCost = startingBabyCost;
 
     localStorage.setItem('upgradeCost', 100);
     upgradeCost = 100;
@@ -419,6 +445,8 @@ function preload () {
     this.load.image('yes', 'assets/images/other/yes.png');
     this.load.image('no', 'assets/images/other/no.png');
     this.load.image('resetButton', 'assets/images/other/reset.png');
+    this.load.image('muteSfxButton', 'assets/images/other/mutesfx.png');
+    this.load.image('unMuteSfxButton', 'assets/images/other/unmutesfx.png');
 }
 
 function create () {
@@ -475,6 +503,13 @@ function create () {
         upgradePanel.x + upgradePanel.width/2 + 40, buyBabyButton.y - buyBabyButton.height/2, '', 
         {fontSize: '30px', fill: '#ff0000' }
     );
+
+    muteSfxButton = this.add.sprite(infoPanel.x, this.game.config.height - 100, 'muteSfxButton').setInteractive({
+        pixelPerfect: true
+    });
+
+    unMuteSfxButton = this.add.sprite(infoPanel.x, this.game.config.height - 100, 'unMuteSfxButton');
+    unMuteSfxButton.visible = false;
 
     resetButton = this.add.sprite(infoPanel.x, this.game.config.height - 40, 'resetButton').setInteractive({
         pixelPerfect: true
@@ -561,6 +596,8 @@ function create () {
     clicker.on('pointerdown', clickedClicker);
     clicker.on('pointerup', unclickedClicker);
     clicker.on('pointerout', unhighlightClicker);
+    muteSfxButton.on('pointerdown', muteSfx);
+    unMuteSfxButton.on('pointerdown', unMuteSfx);
     resetButton.on('pointerdown', clickedReset);
 }
 
