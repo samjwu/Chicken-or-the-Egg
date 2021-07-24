@@ -104,6 +104,9 @@ var upgradeText;
 var upgradeImage;
 var upgradeCostText;
 
+var errorTextTimer = 0;
+var cantBuyText;
+
 var eggCount = 0;
 var eggCountText;
 
@@ -152,7 +155,9 @@ function unhighlightBuyBaby() {
 }
 
 function clickedBuyBaby() {
-    if (eggCount > babyCost) {
+    cantBuyText.setText('');
+
+    if (eggCount >= babyCost) {
         buyBabyButton.setScale(1);
         babyImage.setScale(1);
         
@@ -163,6 +168,9 @@ function clickedBuyBaby() {
         eggsPerSecond += babyPower;
 
         eggsSpent += babyCost;
+    } else {
+        cantBuyText.setText('Not enough eggs to buy a new baby!');
+        errorTextTimer = 3;
     }
 }
 
@@ -182,9 +190,11 @@ function unhighlightUpgrade() {
 }
 
 function clickedUpgrade() {
+    cantBuyText.setText('');
+
     if (playerWonGame == true || clickerIdx == 4) {
         this.scene.sound.play(sfxData[clickerIdx+1].sound, sfxConfig);
-    } else if (eggCount > upgradeCost) {
+    } else if (eggCount >= upgradeCost) {
         buyUpgradeButton.setScale(1);
         upgradeImage.setScale(1);
 
@@ -203,6 +213,9 @@ function clickedUpgrade() {
         }
 
         playNewSong();
+    } else {
+        cantBuyText.setText('Not enough eggs to (d)evolve!');
+        errorTextTimer = 3;
     }
 }
 
@@ -379,6 +392,11 @@ function create () {
         {fontSize: '20px', fill: '#ffffff' }
     );
 
+    cantBuyText = this.add.text(
+        upgradePanel.x + upgradePanel.width/2 + 40, buyBabyButton.y - buyBabyButton.height/2, '', 
+        {fontSize: '30px', fill: '#ff0000' }
+    );
+
     resetButton = this.add.sprite(infoPanel.x, this.game.config.height - 40, 'resetButton').setInteractive({
         pixelPerfect: true
     });
@@ -436,6 +454,11 @@ function update () {
     var dt = (now - clock) / 1000;
     timer += dt;
     playTime.setText(Math.round(timer));
+
+    errorTextTimer -= dt;
+    if (errorTextTimer <= 0) {
+        cantBuyText.setText('');
+    }
 
     backgroundImage.setTexture(backgroundData[clickerIdx*2+1].image);
     foregroundImage.setTexture(backgroundData[clickerIdx*2].image);
