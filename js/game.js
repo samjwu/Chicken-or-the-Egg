@@ -204,6 +204,19 @@ function resetGameValues() {
 }
 
 function preload () {
+    this.load.audio('egg_lsadsdlasd', 'assets/sounds/music/egg_lsadsdlasd.mp3');
+    this.load.audio('spelunky2_egg_radio', 'assets/sounds/music/spelunky2_egg_radio.mp3');
+    this.load.audio('the_hidden_egg', 'assets/sounds/music/the_hidden_egg.mp3');
+    this.load.audio('little_nest_egg', 'assets/sounds/music/little_nest_egg.mp3');
+    this.load.audio('the_song_of_egg', 'assets/sounds/music/the_song_of_egg.mp3');
+
+    this.load.audio('trex_roar', 'assets/sounds/sfx/trex_roar.wav');
+    this.load.audio('velociraptor_roar', 'assets/sounds/sfx/velociraptor_roar.wav');
+    this.load.audio('dinobird_roar', 'assets/sounds/sfx/dinobird_roar.wav');
+    this.load.audio('chickensaur_roar', 'assets/sounds/sfx/chickensaur_roar.wav');
+    this.load.audio('chicken_roar', 'assets/sounds/sfx/chicken_roar.wav');
+    this.load.audio('chicken_man', 'assets/sounds/sfx/chicken_man.wav');
+
     this.load.image('green-forest-front', 'assets/images/backgrounds/parallax/battleback1-1.png');
     this.load.image('green-forest-back', 'assets/images/backgrounds/parallax/battleback1-2.png');
     this.load.image('yellow-forest-front', 'assets/images/backgrounds/parallax/battleback6-1.png');
