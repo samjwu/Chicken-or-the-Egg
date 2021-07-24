@@ -1,11 +1,22 @@
-T-Rex Art: http://pixelartmaker.com/art/c8f06cc0c752b51
+Music
+egg lsadsdlasd: https://www.newgrounds.com/audio/listen/999527
+Spelunky 2 - Egg radio: https://www.newgrounds.com/audio/listen/999455
+The hidden egg: https://www.newgrounds.com/audio/listen/785518
+Little Nest Egg: https://www.newgrounds.com/audio/listen/955937
+The Song of Egg: https://www.newgrounds.com/audio/listen/859090
 
-Velociraptor Art: http://pixelartmaker.com/art/3c1f76565e73092
+Sound Effects
+Trex roar: https://freesound.org/people/CGEffex/sounds/96223/
+Velociraptor roar: https://freesound.org/people/JarredGibb/sounds/233284/
+Dinobird roar: https://freesound.org/people/SuperZero326/sounds/92620/
+Chickensaur roar: https://freesound.org/people/dinodilopho/sounds/263530/
+Chicken imitation: https://freesound.org/people/esperar/sounds/170808/
+Chicken man sounds: https://freesound.org/people/metrostock99/sounds/514481/
 
-Chicken Art: http://pixelartmaker.com/art/bb2d8f8c3accb42
-
-Dinner Art: http://pixelartmaker.com/art/aff74d53f3622b1
-
-Egg Art: http://pixelartmaker.com/art/878395bac3d6443
-
-Background Art: https://opengameart.org/content/backgrounds-3
+Art
+T-Rex: http://pixelartmaker.com/art/c8f06cc0c752b51
+Velociraptor: http://pixelartmaker.com/art/3c1f76565e73092
+Chicken: http://pixelartmaker.com/art/bb2d8f8c3accb42
+Dinner: http://pixelartmaker.com/art/aff74d53f3622b1
+Egg: http://pixelartmaker.com/art/878395bac3d6443
+Backgrounds: https://opengameart.org/content/backgrounds-3

@@ -4,8 +4,14 @@ Which came first: the chicken or the egg?
 
 Answer: the egg!
 
-# About
+# Background
 
-An idle game made for the July Game Jam.
+A game made in one week for the July Game Jam on Newgrounds.
 
 The theme was very EGGxciting. Can you guess what it was?
+
+# About
+
+Chicken or the Egg is an idle clicker game where you try to (d)evolve as fast as possible from a dinosaur to a chicken (this is *probably* real! some research suggests chickens evolved from dinosaurs!) by making eggs. 
+
+Get eggs by clicking on the mother or by making babies that will grow up to make more eggs!

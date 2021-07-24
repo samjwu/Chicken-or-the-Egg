@@ -27,8 +27,7 @@ var clickerData = [
     {name: 'Velociraptor', image: 'velociraptor'},
     {name: 'Dinobird', image: 'dinobird'},
     {name: 'Chickensaur', image: 'chickensaur'},
-    {name: 'Chicken', image: 'chicken'},
-    {name: 'WINNER', image: 'winner'}
+    {name: 'Chicken', image: 'chicken'}
 ];
 
 var producerData = [
@@ -41,7 +40,20 @@ var producerData = [
 ];
 
 var musicData = [
-    
+    {name: 'egg lsadsdlasd', song: 'egg_lsadsdlasd'},
+    {name: 'Spelunky 2 - Egg radio', song: 'spelunky2_egg_radio'},
+    {name: 'The hidden egg', song: 'the_hidden_egg'},
+    {name: 'Little Nest Egg', song: 'little_nest_egg'},
+    {name: 'The Song of Egg', song: 'the_song_of_egg'}
+];
+
+var sfxData = [
+    {name: 'T-Rex Roar', sound: 'trex_roar'},
+    {name: 'Velociraptor Roar', sound: 'velociraptor_roar'},
+    {name: 'Dinobird Roar', sound: 'dinobird_roar'},
+    {name: 'Chickensaur Roar', sound: 'chickensaur_roar'},
+    {name: 'Chicken Roar', sound: 'chicken_roar'},
+    {name: 'Chicken Man', sound: 'chicken_man'}
 ];
 
 var playerWonGame = false;
