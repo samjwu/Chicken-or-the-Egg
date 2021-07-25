@@ -9,7 +9,7 @@ Answer: the egg!
 
 # Background
 
-A game made in one week for the July Game Jam on Newgrounds.
+A game made in one week for the July Game Jam on Newgrounds. Play it on [Newgrounds](https://www.newgrounds.com/portal/view/806922) or [GitHub](https://samjwu.github.io/Chicken-or-the-Egg/)!
 ![July Jam](julyjam.png)
 
 The theme was very EGGxciting. Can you guess what it was?
